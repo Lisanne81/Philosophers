@@ -6,7 +6,7 @@
 /*   By: lhoukes <lhoukes@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/09/08 19:09:58 by lhoukes       #+#    #+#                 */
-/*   Updated: 2022/09/08 19:51:36 by lhoukes       ########   odam.nl         */
+/*   Updated: 2022/11/24 19:04:48 by lhoukes       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,11 +15,11 @@
 
 /*------COLORS--------------*/
 # define R124 "\e[38;5;196m"
-# define B17 "\e[38;5;202m"
-# define B18 "\e[38;5;209m"
-# define B19 "\e[38;5;214m"
-# define B20 "\e[38;5;216m"
-# define B21 "\e[38;5;21m"
+# define O17 "\e[38;5;202m"
+# define O18 "\e[38;5;209m"
+# define Y19 "\e[38;5;214m"
+# define Y20 "\e[38;5;216m"
+# define P21 "\e[38;5;21m"
 # define G22 "\e[38;5;22m"
 # define B23 "\e[38;5;23m"
 # define Y185 "\e[38;5;185m"
@@ -47,15 +47,68 @@
 
 /*------STRUCTS----------------*/
 
-// typedef struct s_philo
-// {
-//     /* data */
-// };  t_philo
+struct						s_philo;
+struct						s_general;
+typedef struct s_philo		t_philo;
+typedef struct s_general	t_general;
+
+typedef enum e_error_type
+{
+	ARG_ERROR = 1,
+	MEMSET_FAIL,
+	INIT_ERROR,
+	MALLOC_FAIL,
+	NO_ROUTINE,
+	NONE
+}	t_error_type;
+
+typedef enum e_status
+{
+	GRABBED_FORK,
+	EAT,
+	SLEEP,
+	THINK,
+	DIED,
+}	t_status;
+typedef struct s_philo
+{
+	int				think_time;
+	int				left_fork;
+	int				right_fork;
+	int				id_philosopher;
+	int				eat_count;
+	int				last_meal;
+	t_general		*data;
+	pthread_mutex_t	lock;
+}	t_philo;
+typedef struct s_general
+{
+	int				eat_time;
+	int				sleep_time;
+	int				time_to_die;
+	int				number_of_times;
+	int				num_of_philos;
+	int				start_eating;
+	int				done_eating;
+	t_philo			*philosopher;
+	pthread_mutex_t	*forks;
+	pthread_mutex_t	set_lock;
+	pthread_mutex_t	log_info;
+}	t_general;
 
 
 /*------FUNCTIONS--------------*/
 
-int	ft_print_banner(int num);
+int		ft_print_banner(int num);
+int		check_start_input(t_general *data, int argc, char **argv);
+int		check_data_input(t_general *data, int argc);
+int		init_general(t_general *data, int argc, char **argv);
+int		set_philos_at_dinner_table(t_general *data);
+int		start_thread(t_philo *philosopher, t_general *data);
 
+/*------ERROR_CHECK------------*/
+void	*protect_check(void *ptr);
+void	print_data(t_general *data);
+int		error_message(t_general *data, t_error_type type);
 
 #endif

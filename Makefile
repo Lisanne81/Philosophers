@@ -4,7 +4,7 @@ LIBFT			= libft/libft.a
 HEADER_M		= includes/philosophers.h
 #-------------------------------------------#
 SRC				= main.c terminal_image.c init_philosophers.c \
-					error_check.c thread.c
+					error_check.c thread.c check_input.c time.c
 DIR_OBJ			= ./obj
 OBJS 			= $(addprefix $(DIR_OBJ)/, $(SRC:.c=.o)) #$(SRC:.c=.o)
 #-------------------------------------------#
@@ -25,7 +25,15 @@ all: $(LIBFT) $(NAME) $(HEADER)
 %.o: %.c
 	$(CC) $(FLAGS) -c $< -o $@
 
-all: $(LIBFT) $(NAME) $(HEADER)
+all:  start $(LIBFT) $(NAME) $(HEADER)
+
+start:	
+		@echo "$(ORANGE)       Let's run:$(NO_COLOR)"
+		@echo "      ▄▀▄     ▄▀▄"
+		@echo "     ▄█░░▀▀▀▀▀░░█▄"
+		@echo " ▄▄  █░░░░░░░░░░░█  ▄▄"
+		@echo "█▄▄█─█░░▀░░┬░░▀░░█─█▄▄█"
+		@echo "$(PINK)🅿 🅷 🅸 🅻 🅾 🆂 🅾 🅿 🅷 🅴 🆁 🆂"
 
 $(NAME): $(OBJS)
 	$(CC) $(FLAGS) -o $(NAME) $(OBJS) $(LIBFT)

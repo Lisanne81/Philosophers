@@ -6,7 +6,7 @@
 /*   By: lhoukes <lhoukes@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/09/08 19:09:58 by lhoukes       #+#    #+#                 */
-/*   Updated: 2022/11/24 19:04:48 by lhoukes       ########   odam.nl         */
+/*   Updated: 2022/11/25 12:42:04 by lhoukes       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@
 # include <stdlib.h>
 # include <string.h>
 # include <fcntl.h>
-# include <time.h>
+# include <sys/time.h>
 # include <fcntl.h>
 # include <stdbool.h>
 
@@ -59,6 +59,7 @@ typedef enum e_error_type
 	INIT_ERROR,
 	MALLOC_FAIL,
 	NO_ROUTINE,
+	MUTEX_ERROR,
 	NONE
 }	t_error_type;
 
@@ -68,6 +69,7 @@ typedef enum e_status
 	EAT,
 	SLEEP,
 	THINK,
+	DONE,
 	DIED,
 }	t_status;
 typedef struct s_philo
@@ -80,16 +82,18 @@ typedef struct s_philo
 	int				last_meal;
 	t_general		*data;
 	pthread_mutex_t	lock;
+	pthread_t		thread;
 }	t_philo;
 typedef struct s_general
 {
+	int				num_of_philos;
 	int				eat_time;
 	int				sleep_time;
 	int				time_to_die;
-	int				number_of_times;
-	int				num_of_philos;
+	int				number_of_times_to_eat;
 	int				start_eating;
 	int				done_eating;
+	int				dead;
 	t_philo			*philosopher;
 	pthread_mutex_t	*forks;
 	pthread_mutex_t	set_lock;
@@ -99,16 +103,19 @@ typedef struct s_general
 
 /*------FUNCTIONS--------------*/
 
-int		ft_print_banner(int num);
-int		check_start_input(t_general *data, int argc, char **argv);
-int		check_data_input(t_general *data, int argc);
-int		init_general(t_general *data, int argc, char **argv);
-int		set_philos_at_dinner_table(t_general *data);
-int		start_thread(t_philo *philosopher, t_general *data);
+int				ft_print_banner(int num);
+int				check_start_input(t_general *data, int argc, char **argv);
+int				check_data_input(t_general *data, int argc);
+int				init_general(t_general *data, int argc, char **argv);
+int				set_philos_at_dinner_table(t_general *data);
+int				start_thread(t_philo *philosopher, t_general *data);
+long long		start_the_clock(void);
+unsigned long	timer(unsigned long life_time);
+void			spend_time(unsigned long current_time, unsigned long time);
 
 /*------ERROR_CHECK------------*/
-void	*protect_check(void *ptr);
-void	print_data(t_general *data);
-int		error_message(t_general *data, t_error_type type);
+void			*protect_check(void *ptr);
+void			print_data(t_general *data);
+int				error_message(t_general *data, t_error_type type);
 
 #endif

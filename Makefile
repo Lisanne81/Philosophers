@@ -1,16 +1,16 @@
 NAME		 	= philo
 #-------------------------------------------#
-LIBFT			= libft/libft.a
 HEADER_M		= includes/philosophers.h
 #-------------------------------------------#
-SRC				= main.c terminal_image.c init_philosophers.c \
-					error_check.c thread.c check_input.c time.c
+SRC				= main.c init_philosophers.c \
+					error_check.c check_input.c \
+					utils.c time.c thread.c actions.c
 DIR_OBJ			= ./obj
 OBJS 			= $(addprefix $(DIR_OBJ)/, $(SRC:.c=.o)) #$(SRC:.c=.o)
 #-------------------------------------------#
 CC				= gcc
 RM				= rm -f
-CFLAGS			= -Wall -Werror -Wextra -g
+CFLAGS			= -Wall -Werror -Wextra -g #-fsanitize=address
 #-------------------------------------------#
 BLUE			=	\033[38;5;30m
 GREEN			= 	\033[38;5;43m
@@ -20,12 +20,12 @@ ORANGE			=	\033[38;5;208m
 NO_COLOR		=	\033[0m
 #-------------------------------------------#
 
-all: $(LIBFT) $(NAME) $(HEADER)
+all:  $(NAME) $(HEADER)
 
 %.o: %.c
-	$(CC) $(FLAGS) -c $< -o $@
+	$(CC) $(CFLAGS) -c $< -o $@
 
-all:  start $(LIBFT) $(NAME) $(HEADER)
+all:  start $(NAME) $(HEADER)
 
 start:	
 		@echo "$(ORANGE)       Let's run:$(NO_COLOR)"
@@ -36,23 +36,16 @@ start:
 		@echo "$(PINK)🅿 🅷 🅸 🅻 🅾 🆂 🅾 🅿 🅷 🅴 🆁 🆂"
 
 $(NAME): $(OBJS)
-	$(CC) $(FLAGS) -o $(NAME) $(OBJS) $(LIBFT)
+	$(CC) $(CFLAGS) -o $(NAME) $(OBJS)
 
 $(DIR_OBJ)/%.o: %.c
 		@mkdir -p $(@D)
 		$(CC) -o $@ -c $< $(CFLAGS)
 
-$(LIBFT):
-		printf "\033c"
-		@echo "☝️ $(BLUE)First of: Make LIBFT$(NO_COLOR) 📖"
-		@$(MAKE) -C./libft
-
 clean:
 	rm -rf $(DIR_OBJ) res subject
-	$(MAKE) clean -C ./libft
 
 fclean: clean
 	rm -f $(NAME)
-	$(MAKE) fclean -C ./libft
 
 re: fclean all

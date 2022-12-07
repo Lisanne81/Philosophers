@@ -6,7 +6,7 @@
 /*   By: lhoukes <lhoukes@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/11/27 11:24:21 by lhoukes       #+#    #+#                 */
-/*   Updated: 2022/12/02 15:57:25 by lhoukes       ########   odam.nl         */
+/*   Updated: 2022/12/06 16:05:15 by lhoukes       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 bool	grab_single_fork(t_philo *philosopher, t_fork *fork)
 {
-	(pthread_mutex_lock(&fork->fork[philosopher->right_fork]));
+	pthread_mutex_lock(&fork->fork[philosopher->right_fork]);
 	status(philosopher, "has taken a fork", "🍴");
 	spend_time(philosopher, current_time(), philosopher->time_to_die + 200);
 	return (false);
@@ -26,7 +26,7 @@ bool	grabbed_a_fork(t_fork *fork, t_philo *philosopher)
 		return (grab_single_fork(philosopher, fork));
 	if (philosopher->id_philosopher % 2 == 0)
 	{
-		(pthread_mutex_lock(&fork->fork[philosopher->right_fork]));
+		pthread_mutex_lock(&fork->fork[philosopher->right_fork]);
 		status(philosopher, "has taken a fork", "🍴");
 		(pthread_mutex_lock(&fork->fork[philosopher->left_fork]));
 		status(philosopher, "has taken a fork", "🍴");
@@ -45,14 +45,29 @@ bool	are_you_being_served(t_philo *philosopher)
 {
 	pthread_mutex_lock(&philosopher->philo_lock);
 	philosopher->eat_count++;
-	pthread_mutex_unlock(&philosopher->philo_lock);
 	if (philosopher->eat_count == philosopher->data->number_of_times_to_eat)
 	{
+		pthread_mutex_unlock(&philosopher->philo_lock);
 		pthread_mutex_lock(&philosopher->data->sim_lock);
 		philosopher->data->philos_eat_count++;
 		pthread_mutex_unlock(&philosopher->data->sim_lock);
+		return (true);
 	}
+	pthread_mutex_unlock(&philosopher->philo_lock);
 	return (true);
+}
+
+bool	we_are_full(t_general *data)
+{
+	pthread_mutex_lock(&data->sim_lock);
+	if (data->num_of_philos == data->philos_eat_count)
+	{
+		pthread_mutex_unlock(&data->sim_lock);
+		this_is_the_end(data);
+		return (true);
+	}
+	pthread_mutex_unlock(&data->sim_lock);
+	return (false);
 }
 
 bool	dinner_time(t_fork *fork, t_philo *philosopher)

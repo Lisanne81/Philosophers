@@ -6,7 +6,7 @@
 /*   By: lhoukes <lhoukes@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/11/24 16:02:38 by lhoukes       #+#    #+#                 */
-/*   Updated: 2022/12/01 21:35:20 by lhoukes       ########   odam.nl         */
+/*   Updated: 2022/12/06 16:06:32 by lhoukes       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,8 @@ int	set_fork_mutex(t_fork *fork, t_general *data)
 	{
 		if (pthread_mutex_init(&fork->fork[index], NULL) != 0)
 		{
-			return (clean_up_forks(fork, index));
+			clean_up_forks(fork, index);
+			return (-1);
 		}
 		index++;
 	}
@@ -52,7 +53,10 @@ bool	greet_every_philosopher(t_general *data, t_fork *fork)
 		data->philosopher[index].start = data->start_eating;
 		data->philosopher[index].fork = fork;
 		if (pthread_mutex_init(&data->philosopher[index].philo_lock, NULL) != 0)
-			return (clean_up_philo_mutexes(data, index));
+		{
+			clean_up_mutexes(data, data->num_of_philos, index, true);
+			return (false);
+		}
 		index++;
 	}
 	return (true);
@@ -71,8 +75,9 @@ int	set_philos_at_dinner_table(t_general *data)
 		sizeof(t_philo)));
 	if (!data->philosopher)
 		return (error_message(MALLOC_FAIL));
-	greet_every_philosopher(data, fork);
-	return (SUCCES);
+	if (greet_every_philosopher(data, fork))
+		return (SUCCES);
+	return (FAIL);
 }
 
 int	init_mutex(t_general *data)
@@ -103,6 +108,7 @@ int	init_general(t_general *data, int argc, char **argv)
 	else
 		data->number_of_times_to_eat = -1;
 	init_mutex(data);
-	set_philos_at_dinner_table(data);
+	if (set_philos_at_dinner_table(data) == FAIL)
+		return (FAIL);
 	return (SUCCES);
 }

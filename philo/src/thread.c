@@ -6,14 +6,13 @@
 /*   By: lhoukes <lhoukes@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/11/24 18:46:12 by lhoukes       #+#    #+#                 */
-/*   Updated: 2022/12/02 16:07:05 by lhoukes       ########   odam.nl         */
+/*   Updated: 2022/12/06 16:28:57 by lhoukes       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./includes/philosophers.h"
 #include <sys/time.h>
 #include <unistd.h>
-#include <stdio.h>
 
 int	plan_funeral(t_general *data)
 {
@@ -41,8 +40,8 @@ int	check_vitals(t_philo *philosopher)
 	pthread_mutex_unlock(&philosopher->philo_lock);
 	if (this_time >= time_of_death)
 	{
-		pthread_mutex_lock(&philosopher->philo_lock);
 		status(philosopher, "died", "💀");
+		pthread_mutex_lock(&philosopher->philo_lock);
 		philosopher->state_of_mind = DIED;
 		pthread_mutex_unlock(&philosopher->philo_lock);
 		return (DIED);
@@ -60,11 +59,8 @@ void	*check_all(void *arguments)
 		continue ;
 	while ("the unisverse & everthing else...")
 	{
-		if (data->num_of_philos == data->philos_eat_count)
-		{
-			this_is_the_end(data);
+		if (we_are_full(data) == true)
 			return (NULL);
-		}
 		index = 0;
 		while (data->num_of_philos > index)
 		{
@@ -121,8 +117,5 @@ void	start_thread(t_general *data)
 	usleep(100);
 	if (pthread_create(check_thread, NULL, check_all, data))
 		return ;
-	pthread_mutex_lock(&data->write_lock);
-	data->all_done = true;
-	pthread_mutex_unlock(&data->write_lock);
 	return ;
 }

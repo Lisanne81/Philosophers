@@ -12,7 +12,7 @@ OBJS 			= $(addprefix $(DIR_OBJ)/, $(SRC:.c=.o))
 #-------------------------------------------#
 CC				= gcc
 RM				= rm -f
-CFLAGS			= -Wall -Werror -Wextra 
+CFLAGS			= -Wall -Werror -Wextra
 #-------------------------------------------#
 BLUE			=	\033[38;5;30m
 GREEN			= 	\033[38;5;43m
@@ -53,3 +53,4 @@ fclean: clean
 		@rm -f $(NAME)
 
 re: fclean all
+

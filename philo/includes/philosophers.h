@@ -6,7 +6,7 @@
 /*   By: lhoukes <lhoukes@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/09/08 19:09:58 by lhoukes       #+#    #+#                 */
-/*   Updated: 2022/12/02 12:42:54 by lhoukes       ########   odam.nl         */
+/*   Updated: 2022/12/06 16:05:46 by lhoukes       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -146,6 +146,7 @@ bool			this_is_the_end(t_general *data);
 bool			think_time(t_philo *philosopher);
 bool			dinner_time(t_fork *fork, t_philo *philosopher);
 bool			grabbed_a_fork(t_fork *fork, t_philo *philosopher);
+bool			we_are_full(t_general *data);
 bool			this_is_the_end(t_general *data);
 bool			spend_time(t_philo *philosopher, \
 					unsigned long current_time, unsigned long time);

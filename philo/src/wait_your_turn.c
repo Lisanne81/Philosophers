@@ -6,7 +6,7 @@
 /*   By: lhoukes <lhoukes@student.codam.nl>           +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/11/26 15:33:42 by lhoukes       #+#    #+#                 */
-/*   Updated: 2022/12/02 13:42:06 by lhoukes       ########   odam.nl         */
+/*   Updated: 2022/12/06 16:07:51 by lhoukes       ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,12 +54,10 @@ bool	this_is_the_end(t_general *data)
 {
 	bool	stop_the_show;
 
-	stop_the_show = true;
+	stop_the_show = false;
 	pthread_mutex_lock(&data->sim_lock);
-	if (data->philos_eat_count == data->num_of_philos || \
-		data->philosopher->state_of_mind == DIED)
-		data->all_done = true;
-	stop_the_show = data->all_done;
+	if (data->philos_eat_count == data->num_of_philos)
+		stop_the_show = true;
 	pthread_mutex_unlock(&data->sim_lock);
 	plan_funeral(data);
 	return (stop_the_show);
